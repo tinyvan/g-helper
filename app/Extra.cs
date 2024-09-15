@@ -5,6 +5,7 @@ using GHelper.Input;
 using GHelper.Mode;
 using GHelper.UI;
 using GHelper.USB;
+using Microsoft.Win32;
 using System.Diagnostics;
 
 namespace GHelper
@@ -416,6 +417,9 @@ namespace GHelper
 
             checkBootSound.Checked = (bootSound == 1);
             checkBootSound.CheckedChanged += CheckBootSound_CheckedChanged;
+
+            var isLaunchOnBoot = AppConfig.IsNotFalse("launch_on_boot");
+            checkLaunchOnBoot.Checked = isLaunchOnBoot;
 
             var statusLed = Program.acpi.DeviceGet(AsusACPI.StatusLed);
             checkStatusLed.Visible = statusLed >= 0;
@@ -842,6 +846,52 @@ namespace GHelper
         private void panelAPU_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void checkLaunchOnBoot_CheckedChanged(object sender, EventArgs e)
+        {
+            string applicationName = "GHelperAutoStart";
+            RegistryKey key;
+            try
+            {
+                var nullableKey = Registry.CurrentUser.OpenSubKey
+                     ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                if (nullableKey != null)
+                {
+                    key=nullableKey;
+                }
+                else
+                {
+                    throw new Exception("Get null registryKey(checkLaunchOnBoot)");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                checkLaunchOnBoot.Checked = !checkLaunchOnBoot.Checked;
+                return;
+            }
+            if (checkLaunchOnBoot.Checked)
+            {
+                var keyValue = key.GetValue(applicationName);
+                if (keyValue == null ||keyValue.ToString()!=Application.ExecutablePath)
+                {
+                    key.SetValue(applicationName, Application.ExecutablePath);
+                    Console.WriteLine($"{applicationName} is set successfully.");
+                }
+                else
+                {
+                    Console.WriteLine($"{applicationName} have been set before");
+                }
+            }
+            else
+            {
+                try
+                {
+                    key.DeleteValue(applicationName);
+                }catch (Exception ex) { Console.WriteLine( ex.Message);return; }
+            }
+            AppConfig.Set("launch_on_boot", checkLaunchOnBoot.Checked ? 1 : 0);
         }
     }
 }

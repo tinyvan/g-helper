@@ -112,6 +112,7 @@ namespace GHelper
             checkTopmost = new CheckBox();
             checkNoOverdrive = new CheckBox();
             checkBootSound = new CheckBox();
+            checkLaunchOnBoot = new CheckBox();
             checkUSBC = new CheckBox();
             checkVariBright = new CheckBox();
             checkGpuApps = new CheckBox();
@@ -1148,6 +1149,7 @@ namespace GHelper
             panelSettings.Controls.Add(checkTopmost);
             panelSettings.Controls.Add(checkNoOverdrive);
             panelSettings.Controls.Add(checkBootSound);
+            panelSettings.Controls.Add(checkLaunchOnBoot);
             panelSettings.Controls.Add(checkUSBC);
             panelSettings.Controls.Add(checkVariBright);
             panelSettings.Controls.Add(checkGpuApps);
@@ -1224,6 +1226,20 @@ namespace GHelper
             checkBootSound.TabIndex = 10;
             checkBootSound.Text = "Boot Sound";
             checkBootSound.UseVisualStyleBackColor = true;
+            // 
+            // checkLaunchOnBoot
+            // 
+            checkLaunchOnBoot.AutoSize = true;
+            checkLaunchOnBoot.Dock = DockStyle.Top;
+            checkLaunchOnBoot.Location = new Point(12, 171);
+            checkLaunchOnBoot.Margin = new Padding(2);
+            checkLaunchOnBoot.Name = "checkLaunchOnBoot";
+            checkLaunchOnBoot.Padding = new Padding(2);
+            checkLaunchOnBoot.Size = new Size(576, 28);
+            checkLaunchOnBoot.TabIndex = 10;
+            checkLaunchOnBoot.Text = "Launch On Boot";
+            checkLaunchOnBoot.UseVisualStyleBackColor = true;
+            checkLaunchOnBoot.CheckedChanged += checkLaunchOnBoot_CheckedChanged;
             // 
             // checkUSBC
             // 
@@ -1795,5 +1811,6 @@ namespace GHelper
         private CheckBox checkBattery;
         private CheckBox checkBatteryLid;
         private CheckBox checkBatteryBar;
+        private CheckBox checkLaunchOnBoot;
     }
 }
